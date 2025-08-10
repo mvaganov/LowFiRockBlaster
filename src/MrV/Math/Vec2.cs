@@ -1,0 +1,10 @@
+﻿namespace MrV.Math {
+	public struct Vec2 {
+		public float x, y;
+		public Vec2(float x, float y) { this.x = x; this.y = y; }
+		public static Vec2 operator +(Vec2 a, Vec2 b) => new Vec2(a.x + b.x, a.y + b.y);
+		public static Vec2 operator -(Vec2 a, Vec2 b) => new Vec2(a.x - b.x, a.y - b.y);
+		public static implicit operator Vec2((float x, float y) tuple) => new Vec2(tuple.x, tuple.y);
+		public override string ToString() => $"({x},{y})";
+	}
+}
