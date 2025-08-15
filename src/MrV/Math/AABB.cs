@@ -7,5 +7,6 @@
 		public AABB(Vec2 min, Vec2 max) { Min = min; Max = max; }
 		public AABB(float minx, float miny, float maxx, float maxy) :
 			this(new Vec2(minx, miny), new Vec2(maxx, maxy)) { }
+		public override string ToString() => $"[min{Min}, max{Max}, w/h({Width}, {Height})]";
 	}
 }
