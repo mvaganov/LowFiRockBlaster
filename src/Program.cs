@@ -1,5 +1,6 @@
 ﻿using MrV.Math;
 using System;
+using System.Diagnostics;
 
 namespace MrV.LowFiRockBlaster {
 	internal class Program {
@@ -67,22 +68,35 @@ namespace MrV.LowFiRockBlaster {
 			Vec2 position = (18, 12);
 			float radius = 10;
 			float moveIncrement = 0.3f;
-			char input;
+			char input = (char)0`;
+			float targetFps = 20;
+			int targetMsDelay = (int)(1000 / targetFps);
 			while (running) {
+				Time.Update();
 				Draw();
+				Console.SetCursorPosition(0, (int)height);
+				Console.WriteLine($"{Time.DeltaTimeMs}   ");
 				Input();
 				Update();
+				Time.SleepWithoutConsoleKeyPress(targetMsDelay);
 			}
+
 			void Draw() {
 				DrawRectangle(0, 0, width, height, letterToPrint);
-				DrawRectangle((2, 3), new Vec2(20, 15), '*');
-				DrawRectangle(new AABB((10, 1), (15, 20)), '|');
+				//DrawRectangle((2, 3), new Vec2(20, 15), '*');
+				//DrawRectangle(new AABB((10, 1), (15, 20)), '|');
 				DrawCircle(position, radius, '.');
-				DrawPolygon(polygonShape, '-');
+				//DrawPolygon(polygonShape, '-');
 				Console.SetCursorPosition(0, (int)height);
 			}
 			void Input() {
-				input = Console.ReadKey().KeyChar;
+				if (Console.KeyAvailable) {
+					while (Console.KeyAvailable) {
+						input = Console.ReadKey().KeyChar;
+					}
+				} else {
+					input = (char)0;
+				}
 			}
 			void Update() {
 				switch (input) {
