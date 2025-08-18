@@ -32,16 +32,15 @@ namespace MrV.LowFiRockBlaster {
 			Vec2 extent = (radius, radius); // Vec2 knows how to convert from a tuple of floats
 			Vec2 start = pos - extent;
 			Vec2 end = pos + extent;
-			Vec2 coord = start;
 			float r2 = radius * radius;
-			for (; coord.y < end.y; coord.y += 1) {
-				coord.x = start.x;
-				for (; coord.x < end.x; coord.x += 1) {
-					if (coord.x < 0 || coord.y < 0) { continue; }
-					Vec2 d = coord - pos;
-					bool pointIsInside = d.x * d.x + d.y * d.y < r2;
+			for (int y = (int)start.y; y < end.y; ++y) {
+				for (int x = (int)start.x; x < end.x; ++x) {
+					if (x < 0 || y < 0) { continue; }
+					float dx = x - pos.x;
+					float dy = y - pos.y;
+					bool pointIsInside = dx * dx + dy * dy < r2;
 					if (pointIsInside) {
-						Console.SetCursorPosition((int)coord.x, (int)coord.y);
+						Console.SetCursorPosition(x, y);
 						Console.Write(letterToPrint);
 					}
 				}
@@ -49,14 +48,12 @@ namespace MrV.LowFiRockBlaster {
 		}
 		public static void DrawPolygon(Vec2[] poly, char letterToPrint) {
 			PolygonShape.TryGetAABB(poly, out Vec2 start, out Vec2 end);
-			Vec2 coord = start;
-			for (; coord.y < end.y; coord.y += 1) {
-				coord.x = start.x;
-				for (; coord.x < end.x; coord.x += 1) {
-					if (coord.x < 0 || coord.y < 0) { continue; }
-					bool pointIsInside = PolygonShape.IsInPolygon(poly, coord);
+			for (int y = (int)start.y; y < end.y; ++y) {
+				for (int x = (int)start.x; x < end.x; ++x) {
+					if (x < 0 || y < 0) { continue; }
+					bool pointIsInside = PolygonShape.IsInPolygon(poly, new Vec2(x, y));
 					if (pointIsInside) {
-						Console.SetCursorPosition((int)coord.x, (int)coord.y);
+						Console.SetCursorPosition(x, y);
 						Console.Write(letterToPrint);
 					}
 				}
@@ -69,15 +66,25 @@ namespace MrV.LowFiRockBlaster {
 			bool running = true;
 			Vec2 position = (18, 12);
 			float radius = 10;
-			float moveIncrement = 0.5f;
+			float moveIncrement = 0.3f;
+			char input;
 			while (running) {
+				Draw();
+				Input();
+				Update();
+			}
+			void Draw() {
 				DrawRectangle(0, 0, width, height, letterToPrint);
 				DrawRectangle((2, 3), new Vec2(20, 15), '*');
 				DrawRectangle(new AABB((10, 1), (15, 20)), '|');
 				DrawCircle(position, radius, '.');
 				DrawPolygon(polygonShape, '-');
 				Console.SetCursorPosition(0, (int)height);
-				char input = Console.ReadKey().KeyChar;
+			}
+			void Input() {
+				input = Console.ReadKey().KeyChar;
+			}
+			void Update() {
 				switch (input) {
 					case 'w': position.y -= moveIncrement; break;
 					case 'a': position.x -= moveIncrement; break;
