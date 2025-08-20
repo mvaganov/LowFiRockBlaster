@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 
-namespace MrV.Math {
+namespace MrV.Geometry {
 	public struct PolygonShape {
 		public Vec2[] points;
 		public PolygonShape(Vec2[] points) {

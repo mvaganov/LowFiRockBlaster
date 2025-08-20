@@ -1,65 +1,9 @@
-﻿using MrV.Math;
+﻿using MrV.CommandLine;
+using MrV.Geometry;
 using System;
-using System.Diagnostics;
 
 namespace MrV.LowFiRockBlaster {
 	internal class Program {
-		public static void DrawRectangle(Vec2 position, Vec2 size, char letterToPrint) {
-			DrawRectangle((int)position.x, (int)position.y, (int)size.x, (int)size.y, letterToPrint);
-		}
-		public static void DrawRectangle(int x, int y, int width, int height, char letterToPrint) {
-			for (int row = 0; row < height; ++row) {
-				for (int col = 0; col < width; ++col) {
-					Console.SetCursorPosition(col + x, row + y);
-					Console.Write(letterToPrint);
-				}
-			}
-		}
-		public static void DrawRectangle(int width, int height, char letterToPrint) {
-			for (int row = 0; row < height; ++row) {
-				for (int col = 0; col < width; ++col) {
-					Console.Write(letterToPrint);
-				}
-				Console.WriteLine();
-			}
-		}
-		public static void DrawRectangle(AABB aabb, char letterToPrint) {
-			DrawRectangle((int)aabb.Min.x, (int)aabb.Min.y, (int)aabb.Width, (int)aabb.Height, letterToPrint);
-		}
-		public static void DrawCircle(Circle c, char letterToPrint) {
-			DrawCircle(c.center, c.radius, letterToPrint);
-		}
-		public static void DrawCircle(Vec2 pos, float radius, char letterToPrint) {
-			Vec2 extent = (radius, radius); // Vec2 knows how to convert from a tuple of floats
-			Vec2 start = pos - extent;
-			Vec2 end = pos + extent;
-			float r2 = radius * radius;
-			for (int y = (int)start.y; y < end.y; ++y) {
-				for (int x = (int)start.x; x < end.x; ++x) {
-					if (x < 0 || y < 0) { continue; }
-					float dx = x - pos.x;
-					float dy = y - pos.y;
-					bool pointIsInside = dx * dx + dy * dy < r2;
-					if (pointIsInside) {
-						Console.SetCursorPosition(x, y);
-						Console.Write(letterToPrint);
-					}
-				}
-			}
-		}
-		public static void DrawPolygon(Vec2[] poly, char letterToPrint) {
-			PolygonShape.TryGetAABB(poly, out Vec2 start, out Vec2 end);
-			for (int y = (int)start.y; y < end.y; ++y) {
-				for (int x = (int)start.x; x < end.x; ++x) {
-					if (x < 0 || y < 0) { continue; }
-					bool pointIsInside = PolygonShape.IsInPolygon(poly, new Vec2(x, y));
-					if (pointIsInside) {
-						Console.SetCursorPosition(x, y);
-						Console.Write(letterToPrint);
-					}
-				}
-			}
-		}
 		static void Main(string[] args) {
 			int width = 80, height = 24;
 			char letterToPrint = '#';
@@ -68,9 +12,10 @@ namespace MrV.LowFiRockBlaster {
 			Vec2 position = (18, 12);
 			float radius = 10;
 			float moveIncrement = 0.3f;
-			char input = (char)0`;
-			float targetFps = 20;
+			char input = (char)0;
+			float targetFps = 200;
 			int targetMsDelay = (int)(1000 / targetFps);
+			DrawBuffer graphics = new DrawBuffer(height, width);
 			while (running) {
 				Time.Update();
 				Draw();
@@ -82,11 +27,14 @@ namespace MrV.LowFiRockBlaster {
 			}
 
 			void Draw() {
-				DrawRectangle(0, 0, width, height, letterToPrint);
-				//DrawRectangle((2, 3), new Vec2(20, 15), '*');
-				//DrawRectangle(new AABB((10, 1), (15, 20)), '|');
-				DrawCircle(position, radius, '.');
-				//DrawPolygon(polygonShape, '-');
+				Vec2 scale = (0.5f, 1);
+				graphics.Clear();
+				graphics.DrawRectangle(0, 0, width, height, letterToPrint);
+				graphics.DrawRectangle((2, 3), new Vec2(20, 15), '*');
+				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), '|');
+				graphics.DrawCircle(position, radius, '.');
+				graphics.DrawPolygon(polygonShape, '-');
+				graphics.Print();
 				Console.SetCursorPosition(0, (int)height);
 			}
 			void Input() {

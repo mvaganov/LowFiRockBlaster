@@ -1,4 +1,4 @@
-﻿namespace MrV.Math {
+﻿namespace MrV.Geometry {
 	public struct AABB {
 		public Vec2 Min, Max;
 		public float Width => (Max.x - Min.x);

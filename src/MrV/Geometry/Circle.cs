@@ -1,4 +1,4 @@
-﻿namespace MrV.Math {
+﻿namespace MrV.Geometry {
 	public struct Circle {
 		public Vec2 center;
 		public float radius;
