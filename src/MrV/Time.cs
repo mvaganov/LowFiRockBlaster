@@ -20,8 +20,12 @@ namespace MrV {
 		protected static Time _instance;
 		public long deltaTimeMs => _deltaTimeMs;
 		public float deltaTimeSec => _deltaTimeSec;
+		public long timeMsCurrentFrame => _timeMsOfCurrentFrame;
+		public double timeSecCurrentFrame => _timeSecOfCurrentFrame;
 		public long DeltaTimeMsCalculateNow => _timer.ElapsedMilliseconds - _timeMsOfCurrentFrame;
 		public float DeltaTimeSecCalculateNow => (float)(_timer.Elapsed.TotalSeconds - _timeSecOfCurrentFrame);
+		public static long TimeMsCurrentFrame => Instance.timeMsCurrentFrame;
+		public static double TimeSecCurrentFrame => Instance.timeSecCurrentFrame;
 		public static Time Instance => _instance != null ? _instance : _instance = new Time();
 		public static long DeltaTimeMs => Instance.deltaTimeMs;
 		public static float DeltaTimeSec => Instance.deltaTimeSec;

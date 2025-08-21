@@ -1,4 +1,5 @@
 ﻿using MrV.CommandLine;
+using MrV.Task;
 using MrV.Geometry;
 using System;
 
@@ -16,6 +17,20 @@ namespace MrV.LowFiRockBlaster {
 			float targetFps = 200;
 			int targetMsDelay = (int)(1000 / targetFps);
 			DrawBuffer graphics = new DrawBuffer(height, width);
+			int time = 0;
+			for (int i = 0; i < 10; ++i) {
+				Tasks.Add(() => input = 'd', time);
+				time += 100;
+				Tasks.Add(() => input = 'e', time);
+				time += 100;
+			}
+			for (int i = 0; i < 20; ++i) {
+				Tasks.Add(() => input = 'w', time);
+				time += 100;
+				Tasks.Add(() => input = 'r', time);
+				time += 100;
+			}
+			Tasks.Add(() => running = false, time);
 			while (running) {
 				Time.Update();
 				Draw();
@@ -47,6 +62,7 @@ namespace MrV.LowFiRockBlaster {
 				}
 			}
 			void Update() {
+				Tasks.Update();
 				switch (input) {
 					case 'w': position.y -= moveIncrement; break;
 					case 'a': position.x -= moveIncrement; break;
