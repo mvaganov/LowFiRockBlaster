@@ -17,20 +17,32 @@ namespace MrV.LowFiRockBlaster {
 			float targetFps = 200;
 			int targetMsDelay = (int)(1000 / targetFps);
 			DrawBuffer graphics = new DrawBuffer(height, width);
-			int time = 0;
+			KeyInput.Bind('w', MoveCircleUp);
+			KeyInput.Bind('a', MoveCircleLeft);
+			KeyInput.Bind('s', MoveCircleDown);
+			KeyInput.Bind('d', MoveCircleRight);
+			KeyInput.Bind('e', ExpandCircleRadius);
+			KeyInput.Bind('r', ReduceCircleRadius);
+			void MoveCircleUp(DispatchTable<char> keyInput) => position.y -= moveIncrement;
+			void MoveCircleLeft(DispatchTable<char> keyInput) => position.x -= moveIncrement;
+			void MoveCircleDown(DispatchTable<char> keyInput) => position.y += moveIncrement;
+			void MoveCircleRight(DispatchTable<char> keyInput) => position.x += moveIncrement;
+			void ExpandCircleRadius(DispatchTable<char> keyInput) => radius += moveIncrement;
+			void ReduceCircleRadius(DispatchTable<char> keyInput) => radius -= moveIncrement;
+			int timeMs = 0;
+			int keyDelayMs = 20;
 			for (int i = 0; i < 10; ++i) {
-				Tasks.Add(() => input = 'd', time);
-				time += 100;
-				Tasks.Add(() => input = 'e', time);
-				time += 100;
+				Tasks.Add(() => KeyInput.Add('d'), timeMs);
+				timeMs += keyDelayMs;
+				Tasks.Add(() => KeyInput.Add('e'), timeMs);
+				timeMs += keyDelayMs;
 			}
 			for (int i = 0; i < 20; ++i) {
-				Tasks.Add(() => input = 'w', time);
-				time += 100;
-				Tasks.Add(() => input = 'r', time);
-				time += 100;
+				Tasks.Add(() => KeyInput.Add('w'), timeMs);
+				timeMs += keyDelayMs;
+				Tasks.Add(() => KeyInput.Add('r'), timeMs);
+				timeMs += keyDelayMs;
 			}
-			Tasks.Add(() => running = false, time);
 			while (running) {
 				Time.Update();
 				Draw();
@@ -53,25 +65,11 @@ namespace MrV.LowFiRockBlaster {
 				Console.SetCursorPosition(0, (int)height);
 			}
 			void Input() {
-				if (Console.KeyAvailable) {
-					while (Console.KeyAvailable) {
-						input = Console.ReadKey().KeyChar;
-					}
-				} else {
-					input = (char)0;
-				}
+				KeyInput.Read();
 			}
 			void Update() {
+				KeyInput.TriggerEvents();
 				Tasks.Update();
-				switch (input) {
-					case 'w': position.y -= moveIncrement; break;
-					case 'a': position.x -= moveIncrement; break;
-					case 's': position.y += moveIncrement; break;
-					case 'd': position.x += moveIncrement; break;
-					case 'e': radius += moveIncrement; break;
-					case 'r': radius -= moveIncrement; break;
-					case (char)27: running = false; break;
-				}
 			}
 		}
 	}

@@ -17,13 +17,12 @@ namespace MrV.Task {
 		protected List<Task> tasks = new List<Task>();
 		protected static Tasks _instance;
 		public static Tasks Instance => _instance != null ? _instance : _instance = new Tasks();
-		public static void Add(System.Action whatToDo, long delay = 0) => Instance.Enqueue(whatToDo, delay);
+		public static void Add(System.Action whatToDo, long delay) => Instance.Enqueue(whatToDo, delay);
 		public static bool Update() => Instance.RunUpdate();
 		public void Enqueue(System.Action whatToDo, long delay = 0) {
 			long when = Time.TimeMsCurrentFrame + delay;
-			int index = Algorithm.BinarySearchWithInsertionPoint(tasks, when, GetTimeFromTask, LongLessThan);
+			int index = Algorithm.BinarySearch(tasks, when, GetTimeFromTask);
 			long GetTimeFromTask(Task t) => t.WhenToDoIt;
-			bool LongLessThan(long a, long b) => a < b;
 			if (index < 0) {
 				index = ~index;
 			}
