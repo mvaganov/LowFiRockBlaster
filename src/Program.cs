@@ -23,12 +23,12 @@ namespace MrV.LowFiRockBlaster {
 			KeyInput.Bind('d', MoveCircleRight);
 			KeyInput.Bind('e', ExpandCircleRadius);
 			KeyInput.Bind('r', ReduceCircleRadius);
-			void MoveCircleUp(DispatchTable<char> keyInput) => position.y -= moveIncrement;
-			void MoveCircleLeft(DispatchTable<char> keyInput) => position.x -= moveIncrement;
-			void MoveCircleDown(DispatchTable<char> keyInput) => position.y += moveIncrement;
-			void MoveCircleRight(DispatchTable<char> keyInput) => position.x += moveIncrement;
-			void ExpandCircleRadius(DispatchTable<char> keyInput) => radius += moveIncrement;
-			void ReduceCircleRadius(DispatchTable<char> keyInput) => radius -= moveIncrement;
+			void MoveCircleUp() => position.y -= moveIncrement;
+			void MoveCircleLeft() => position.x -= moveIncrement;
+			void MoveCircleDown() => position.y += moveIncrement;
+			void MoveCircleRight() => position.x += moveIncrement;
+			void ExpandCircleRadius() => radius += moveIncrement;
+			void ReduceCircleRadius() => radius -= moveIncrement;
 			int timeMs = 0;
 			int keyDelayMs = 20;
 			for (int i = 0; i < 10; ++i) {
