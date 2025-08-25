@@ -17,18 +17,13 @@ namespace MrV.LowFiRockBlaster {
 			float targetFps = 200;
 			int targetMsDelay = (int)(1000 / targetFps);
 			DrawBuffer graphics = new DrawBuffer(height, width);
-			KeyInput.Bind('w', MoveCircleUp);
-			KeyInput.Bind('a', MoveCircleLeft);
-			KeyInput.Bind('s', MoveCircleDown);
-			KeyInput.Bind('d', MoveCircleRight);
-			KeyInput.Bind('e', ExpandCircleRadius);
-			KeyInput.Bind('r', ReduceCircleRadius);
-			void MoveCircleUp() => position.y -= moveIncrement;
-			void MoveCircleLeft() => position.x -= moveIncrement;
-			void MoveCircleDown() => position.y += moveIncrement;
-			void MoveCircleRight() => position.x += moveIncrement;
-			void ExpandCircleRadius() => radius += moveIncrement;
-			void ReduceCircleRadius() => radius -= moveIncrement;
+			KeyInput.Bind('w', () => position.y -= moveIncrement, "move circle up");
+			KeyInput.Bind('a', () => position.x -= moveIncrement, "move circle left");
+			KeyInput.Bind('s', () => position.y += moveIncrement, "move circle down");
+			KeyInput.Bind('d', () => position.x += moveIncrement, "move circle right");
+			KeyInput.Bind('e', () => radius += moveIncrement, "expand radius");
+			KeyInput.Bind('r', () => radius -= moveIncrement, "reduce radius");
+			KeyInput.Bind((char)27, () => running = false, "quit");
 			int timeMs = 0;
 			int keyDelayMs = 20;
 			for (int i = 0; i < 10; ++i) {

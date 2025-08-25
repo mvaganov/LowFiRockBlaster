@@ -16,10 +16,10 @@ namespace MrV.CommandLine {
 		public DrawBuffer(int height, int width) {
 			SetSize(height, width);
 		}
-		public void SetSize(int height, int width) {
+		public virtual void SetSize(int height, int width) {
 			ResizeBuffer(ref _buffer, height, width);
 		}
-		private static void ResizeBuffer(ref char[,] buffer, int height, int width) {
+		protected static void ResizeBuffer(ref char[,] buffer, int height, int width) {
 			char[,] oldBuffer = buffer;
 			buffer = new char[height, width];
 			if (oldBuffer == null) {
