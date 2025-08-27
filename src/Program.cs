@@ -16,7 +16,7 @@ namespace MrV.LowFiRockBlaster {
 			char input = (char)0;
 			float targetFps = 200;
 			int targetMsDelay = (int)(1000 / targetFps);
-			DrawBuffer graphics = new DrawBuffer(height, width);
+			GraphicsContext graphics = new GraphicsContext(height, width);
 			KeyInput.Bind('w', () => position.y -= moveIncrement, "move circle up");
 			KeyInput.Bind('a', () => position.x -= moveIncrement, "move circle left");
 			KeyInput.Bind('s', () => position.y += moveIncrement, "move circle down");
@@ -56,7 +56,8 @@ namespace MrV.LowFiRockBlaster {
 				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), '|');
 				graphics.DrawCircle(position, radius, '.');
 				graphics.DrawPolygon(polygonShape, '-');
-				graphics.Print();
+				graphics.PrintModifiedCharactersOnly();
+				graphics.SwapBuffers();
 				Console.SetCursorPosition(0, (int)height);
 			}
 			void Input() {
