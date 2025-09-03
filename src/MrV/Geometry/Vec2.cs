@@ -10,5 +10,11 @@ namespace MrV.Geometry {
 		public override string ToString() => $"({x},{y})";
 		public void Scale(Vec2 scale) { x *= scale.x; y *= scale.y; }
 		public void InverseScale(Vec2 scale) { x /= scale.x; y /= scale.y; }
+		public float MagnitudeSqr => x * x + y * y;
+		public float Magnitude => MathF.Sqrt(MagnitudeSqr);
+		public static Vec2 operator *(Vec2 vector, float scalar) => new Vec2(vector.x * scalar, vector.y * scalar);
+		public static Vec2 operator /(Vec2 vector, float scalar) => new Vec2(vector.x / scalar, vector.y / scalar);
+		public Vec2 Normalized => this / Magnitude;
+		public Vec2 Perpendicular => new Vec2(y, -x);
 	}
 }

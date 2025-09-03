@@ -51,12 +51,13 @@ namespace MrV.LowFiRockBlaster {
 			void Draw() {
 				Vec2 scale = (0.5f, 1);
 				graphics.Clear();
-				graphics.DrawRectangle(0, 0, width, height, letterToPrint);
-				graphics.DrawRectangle((2, 3), new Vec2(20, 15), '*');
-				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), '|');
-				graphics.DrawCircle(position, radius, '.');
-				graphics.DrawPolygon(polygonShape, '-');
-				graphics.PrintModifiedCharactersOnly();
+				graphics.DrawRectangle(0, 0, width, height, ConsoleGlyph.Default);
+				graphics.DrawRectangle((2, 3), new Vec2(20, 15), ConsoleColor.Red);
+				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), ConsoleColor.Green);
+				graphics.DrawCircle(position, radius, ConsoleColor.Blue);
+				graphics.DrawPolygon(polygonShape, ConsoleColor.Yellow);
+				graphics.DrawLine((2, 0), (30, 3), .5f, ConsoleColor.Magenta);
+				graphics.PrintModifiedOnly();
 				graphics.SwapBuffers();
 				Console.SetCursorPosition(0, (int)height);
 			}
