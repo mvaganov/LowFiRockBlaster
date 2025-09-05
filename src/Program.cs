@@ -2,18 +2,17 @@
 using MrV.Task;
 using MrV.Geometry;
 using System;
+using MrV.GameEngine;
 
 namespace MrV.LowFiRockBlaster {
 	internal class Program {
 		static void Main(string[] args) {
 			int width = 80, height = 24;
-			char letterToPrint = '#';
 			Vec2[] polygonShape = new Vec2[] { (25, 5), (35, 1), (50, 20) };
 			bool running = true;
 			Vec2 position = (18, 12);
 			float radius = 10;
 			float moveIncrement = 0.3f;
-			char input = (char)0;
 			float targetFps = 200;
 			int targetMsDelay = (int)(1000 / targetFps);
 			GraphicsContext graphics = new GraphicsContext(height, width);
@@ -38,6 +37,7 @@ namespace MrV.LowFiRockBlaster {
 				Tasks.Add(() => KeyInput.Add('r'), timeMs);
 				timeMs += keyDelayMs;
 			}
+			Particle particle = new Particle(new Circle((10,10), 3), (3,4), ConsoleColor.White);
 			while (running) {
 				Time.Update();
 				Draw();
@@ -56,7 +56,7 @@ namespace MrV.LowFiRockBlaster {
 				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), ConsoleColor.Green);
 				graphics.DrawCircle(position, radius, ConsoleColor.Blue);
 				graphics.DrawPolygon(polygonShape, ConsoleColor.Yellow);
-				graphics.DrawLine((2, 0), (30, 3), .5f, ConsoleColor.Magenta);
+				particle.Draw(graphics);
 				graphics.PrintModifiedOnly();
 				graphics.SwapBuffers();
 				Console.SetCursorPosition(0, (int)height);
@@ -67,6 +67,7 @@ namespace MrV.LowFiRockBlaster {
 			void Update() {
 				KeyInput.TriggerEvents();
 				Tasks.Update();
+				particle.Update();
 			}
 		}
 	}
