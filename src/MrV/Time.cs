@@ -18,6 +18,7 @@ namespace MrV {
 		protected long _timeMsOfCurrentFrame;
 		protected double _timeSecOfCurrentFrame;
 		protected static Time _instance;
+		public static long CurrentTimeMs => DateTimeOffset.Now.ToUnixTimeMilliseconds();
 		public long deltaTimeMs => _deltaTimeMs;
 		public float deltaTimeSec => _deltaTimeSec;
 		public long timeMsCurrentFrame => _timeMsOfCurrentFrame;

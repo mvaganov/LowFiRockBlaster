@@ -16,5 +16,16 @@ namespace MrV.Geometry {
 		public static Vec2 operator /(Vec2 vector, float scalar) => new Vec2(vector.x / scalar, vector.y / scalar);
 		public Vec2 Normalized => this / Magnitude;
 		public Vec2 Perpendicular => new Vec2(y, -x);
+		public static float DegreesToRadians(float degrees) => degrees * MathF.PI / 180;
+		public static float RadiansToDegrees(float radians) => radians * 180 / MathF.PI;
+		public static Vec2 ConvertRadians(float radians) => new Vec2(MathF.Cos(radians), MathF.Sin(radians));
+		public static Vec2 ConvertDegrees(float degrees) => ConvertRadians(DegreesToRadians(degrees));
+		public float NormalToDegrees() => RadiansToDegrees(NormalToRadians());
+		public float NormalToRadians() => WrapRadian(MathF.Atan2(y, x));
+		public static float WrapRadian(float radian) {
+			while (radian > MathF.PI) { radian -= 2 * MathF.PI; }
+			while (radian <= -MathF.PI) { radian += 2 * MathF.PI; }
+			return radian;
+		}
 	}
 }

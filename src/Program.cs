@@ -37,7 +37,13 @@ namespace MrV.LowFiRockBlaster {
 				Tasks.Add(() => KeyInput.Add('r'), timeMs);
 				timeMs += keyDelayMs;
 			}
-			Particle particle = new Particle(new Circle((10,10), 3), (3,4), ConsoleColor.White);
+			Particle[] particles = new Particle[10];
+			Rand.Instance.Seed = (uint)Time.CurrentTimeMs;
+			for (int i = 0; i < particles.Length; ++i) {
+				Vec2 direction = Vec2.ConvertDegrees(Rand.Number * 360);//i * (360f / 10));
+				float speed = 5;
+				particles[i] = new Particle(new Circle((10, 10), Rand.Number * 3), direction * speed, ConsoleColor.White);
+			}
 			while (running) {
 				Time.Update();
 				Draw();
@@ -56,7 +62,9 @@ namespace MrV.LowFiRockBlaster {
 				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), ConsoleColor.Green);
 				graphics.DrawCircle(position, radius, ConsoleColor.Blue);
 				graphics.DrawPolygon(polygonShape, ConsoleColor.Yellow);
-				particle.Draw(graphics);
+				for (int i = 0; i < particles.Length; ++i) {
+					particles[i].Draw(graphics);
+				}
 				graphics.PrintModifiedOnly();
 				graphics.SwapBuffers();
 				Console.SetCursorPosition(0, (int)height);
@@ -67,7 +75,9 @@ namespace MrV.LowFiRockBlaster {
 			void Update() {
 				KeyInput.TriggerEvents();
 				Tasks.Update();
-				particle.Update();
+				for (int i = 0; i < particles.Length; ++i) {
+					particles[i].Update();
+				}
 			}
 		}
 	}
