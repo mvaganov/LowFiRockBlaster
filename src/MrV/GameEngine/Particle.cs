@@ -7,21 +7,23 @@ namespace MrV.GameEngine {
 		public Circle Circle;
 		public ConsoleColor Color;
 		public Vec2 Velocity;
-		public bool enabled;
-		public float lifetimeMax, lifetimeCurrent;
+		public bool Enabled;
+		public float LifetimeMax, LifetimeCurrent;
+		public float OriginalSize;
 		public Particle(Circle circle, Vec2 velocity, ConsoleColor color, float lifetime) {
 			Init(circle, velocity, color, lifetime);
 		}
 		public void Init(Circle circle, Vec2 velocity, ConsoleColor color, float lifetime) {
 			Circle = circle;
+			OriginalSize = circle.radius;
 			Velocity = velocity;
 			Color = color;
-			enabled = true;
-			lifetimeMax = lifetime;
-			lifetimeCurrent = 0;
+			Enabled = true;
+			LifetimeMax = lifetime;
+			LifetimeCurrent = 0;
 		}
 		public void Draw(GraphicsContext g) {
-			if (!enabled) { return; }
+			if (!Enabled) { return; }
 			g.DrawCircle(Circle, Color);
 			//float speed = Velocity.Magnitude;
 			//if (speed > 0) {
@@ -31,10 +33,10 @@ namespace MrV.GameEngine {
 			//}
 		}
 		public void Update() {
-			if (!enabled) { return; }
-			lifetimeCurrent += Time.DeltaTimeSec;
-			if (lifetimeCurrent >= lifetimeMax) {
-				enabled = false;
+			if (!Enabled) { return; }
+			LifetimeCurrent += Time.DeltaTimeSec;
+			if (LifetimeCurrent >= LifetimeMax) {
+				Enabled = false;
 				return;
 			}
 			Vec2 moveThisFrame = Velocity * Time.DeltaTimeSec;

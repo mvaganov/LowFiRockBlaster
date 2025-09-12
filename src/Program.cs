@@ -37,32 +37,21 @@ namespace MrV.LowFiRockBlaster {
 				Tasks.Add(() => KeyInput.Add('r'), timeMs);
 				timeMs += keyDelayMs;
 			}
-			//Particle[] particles = new Particle[10];
-			ObjectPool<Particle> particles = new ObjectPool<Particle>();
-			float particleSpeed = 5, particleRad = 3;
-			particles.Setup(
+			ObjectPool<Particle> particlesPool = new ObjectPool<Particle>();
+			float particleSpeed = 5, particleRad = 2;
+			particlesPool.Setup(
 				() => new Particle(new Circle(default, 1), default, ConsoleColor.White, 1),
 				p => {
 					Vec2 direction = Vec2.ConvertDegrees(Rand.Number * 360);
 					p.Init(new Circle((10, 10), Rand.Number * particleRad), direction * Rand.Number * particleSpeed,
 						ConsoleColor.White, Rand.Range(.25f, 1));
 				},
-				p => p.enabled = false);
+				p => p.Enabled = false);
 			Rand.Instance.Seed = (uint)Time.CurrentTimeMs;
-			//for (int i = 0; i < particles.Length; ++i) {
-			//	Vec2 direction = Vec2.ConvertDegrees(Rand.Number * 360);
-			//	float speed = 5, rad = 3;
-			//	particles[i] = new Particle(new Circle((10, 10), Rand.Number * rad), direction * (Rand.Number * speed), ConsoleColor.White, Rand.Range(.25f, 1));
-			//}
 			KeyInput.Bind(' ', () => {
 				for (int i = 0; i < 10; ++i) {
-					particles.Commission();
+					particlesPool.Commission();
 				}
-				//for (int i = 0; i < particles.Length; ++i) {
-				//	Vec2 direction = Vec2.ConvertDegrees(Rand.Number * 360);
-				//	float speed = 5, rad = 3;
-				//	particles[i].Init(new Circle((10, 10), Rand.Number * rad), direction * Rand.Number * speed, ConsoleColor.White, Rand.Range(.25f, 1));
-				//}
 			}, "explosion");
 			FloatOverTime growAndShrink = FloatOverTime.GrowAndShrink;
 			while (running) {
@@ -83,8 +72,8 @@ namespace MrV.LowFiRockBlaster {
 				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), ConsoleColor.Green);
 				graphics.DrawCircle(position, radius, ConsoleColor.Blue);
 				graphics.DrawPolygon(polygonShape, ConsoleColor.Yellow);
-				for (int i = 0; i < particles.Count; ++i) {
-					particles[i].Draw(graphics);
+				for (int i = 0; i < particlesPool.Count; ++i) {
+					particlesPool[i].Draw(graphics);
 				}
 				graphics.PrintModifiedOnly();
 				graphics.SwapBuffers();
@@ -96,16 +85,17 @@ namespace MrV.LowFiRockBlaster {
 			void Update() {
 				KeyInput.TriggerEvents();
 				Tasks.Update();
-				for (int i = 0; i < particles.Count; ++i) {
-					particles[i].Update();
-					float timeProgress = particles[i].lifetimeCurrent / particles[i].lifetimeMax;
-					if (growAndShrink.TryGetValue(timeProgress, out float nextRadius)) {
-						particles[i].Circle.radius = nextRadius;
+				for (int i = 0; i < particlesPool.Count; ++i) {
+					particlesPool[i].Update();
+					float timeProgress = particlesPool[i].LifetimeCurrent / particlesPool[i].LifetimeMax;
+					if (growAndShrink.TryGetValue(timeProgress, out float nextRadiusPercentage)) {
+						particlesPool[i].Circle.radius = nextRadiusPercentage * particlesPool[i].OriginalSize;
 					}
 					if (timeProgress >= 1) {
-						Tasks.Add(() => particles.DecommissionAtIndex(i), 0);
+						particlesPool.DecommissionDelayedAtIndex(i);
 					}
 				}
+				particlesPool.ServiceDelayedDecommission();
 			}
 		}
 	}
