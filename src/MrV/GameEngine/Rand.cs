@@ -11,7 +11,7 @@
 			return Seed;
 		}
 		public float GetNumber() => (Instance.Next() & 0xffffff) / (float)(0xffffff);
-		public float GetNumber(float min, float max) => (Instance.Next() * (max-min)) + min;
+		public float GetNumber(float min, float max) => (Instance.GetNumber() * (max - min)) + min;
 		public static float Number => Instance.GetNumber();
 		public static float Range(float min, float max) => Instance.GetNumber(min, max);
 	}
