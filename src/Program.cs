@@ -37,23 +37,11 @@ namespace MrV.LowFiRockBlaster {
 				Tasks.Add(() => KeyInput.Add('r'), timeMs);
 				timeMs += keyDelayMs;
 			}
-			ObjectPool<Particle> particlesPool = new ObjectPool<Particle>();
 			float particleSpeed = 5, particleRad = 2;
-			particlesPool.Setup(
-				() => new Particle(new Circle(default, 1), default, ConsoleColor.White, 1),
-				p => {
-					Vec2 direction = Vec2.ConvertDegrees(Rand.Number * 360);
-					p.Init(new Circle((10, 10), Rand.Number * particleRad), direction * Rand.Number * particleSpeed,
-						ConsoleColor.White, Rand.Range(.25f, 1));
-				},
-				p => p.Enabled = false);
-			Rand.Instance.Seed = (uint)Time.CurrentTimeMs;
-			KeyInput.Bind(' ', () => {
-				for (int i = 0; i < 10; ++i) {
-					particlesPool.Commission();
-				}
-			}, "explosion");
-			FloatOverTime growAndShrink = FloatOverTime.GrowAndShrink;
+			ParticleSystem particles = new ParticleSystem((.25f, 1), (1, particleRad),
+				(1, particleSpeed), 0.125f, ConsoleColor.White, FloatOverTime.GrowAndShrink);
+			particles.Position = (10, 10);
+			KeyInput.Bind(' ', () => particles.Emit(10), "explosion");
 			while (running) {
 				Time.Update();
 				Draw();
@@ -72,9 +60,7 @@ namespace MrV.LowFiRockBlaster {
 				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), ConsoleColor.Green);
 				graphics.DrawCircle(position, radius, ConsoleColor.Blue);
 				graphics.DrawPolygon(polygonShape, ConsoleColor.Yellow);
-				for (int i = 0; i < particlesPool.Count; ++i) {
-					particlesPool[i].Draw(graphics);
-				}
+				particles.Draw(graphics);
 				graphics.PrintModifiedOnly();
 				graphics.SwapBuffers();
 				Console.SetCursorPosition(0, (int)height);
@@ -85,17 +71,7 @@ namespace MrV.LowFiRockBlaster {
 			void Update() {
 				KeyInput.TriggerEvents();
 				Tasks.Update();
-				for (int i = 0; i < particlesPool.Count; ++i) {
-					particlesPool[i].Update();
-					float timeProgress = particlesPool[i].LifetimeCurrent / particlesPool[i].LifetimeMax;
-					if (growAndShrink.TryGetValue(timeProgress, out float nextRadiusPercentage)) {
-						particlesPool[i].Circle.radius = nextRadiusPercentage * particlesPool[i].OriginalSize;
-					}
-					if (timeProgress >= 1) {
-						particlesPool.DecommissionDelayedAtIndex(i);
-					}
-				}
-				particlesPool.ServiceDelayedDecommission();
+				particles.Update();
 			}
 		}
 	}
