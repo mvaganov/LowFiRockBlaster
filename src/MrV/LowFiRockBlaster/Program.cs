@@ -45,7 +45,7 @@ namespace MrV.LowFiRockBlaster {
 			while (running) {
 				Time.Update();
 				Draw();
-				Console.SetCursorPosition(0, (int)height);
+				Console.SetCursorPosition(0, height);
 				Console.WriteLine($"{Time.DeltaTimeMs}   ");
 				Input();
 				Update();
@@ -63,7 +63,7 @@ namespace MrV.LowFiRockBlaster {
 				particles.Draw(graphics);
 				graphics.PrintModifiedOnly();
 				graphics.SwapBuffers();
-				Console.SetCursorPosition(0, (int)height);
+				Console.SetCursorPosition(0, height);
 			}
 			void Input() {
 				KeyInput.Read();
