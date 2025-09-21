@@ -23,6 +23,9 @@ namespace MrV.LowFiRockBlaster {
 			KeyInput.Bind('e', () => radius += moveIncrement, "expand radius");
 			KeyInput.Bind('r', () => radius -= moveIncrement, "reduce radius");
 			KeyInput.Bind((char)27, () => running = false, "quit");
+			KeyInput.Bind('-', () => graphics.Scale *= 1.25f, "zoom out");
+			KeyInput.Bind('=', () => graphics.Scale /= 1.25f, "zoom in");
+			graphics.SetCameraCenter((10, 10));
 			int timeMs = 0;
 			int keyDelayMs = 20;
 			for (int i = 0; i < 10; ++i) {

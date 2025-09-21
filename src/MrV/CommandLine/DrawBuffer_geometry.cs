@@ -4,6 +4,30 @@ using System;
 namespace MrV.CommandLine {
 	public partial class DrawBuffer {
 		public static ConsoleColorPair[,] AntiAliasColorMap;
+		private Vec2 _originOffsetULCorner;
+		public Vec2 Scale {
+			get => ShapeScale;
+			set {
+				Vec2 center = GetCameraCenter();
+				ShapeScale = value;
+				SetCameraCenter(center);
+			}
+		}
+		public Vec2 Offset { get => _originOffsetULCorner; set => _originOffsetULCorner = value; }
+		public Vec2 GetCameraCenter() {
+			Vec2 cameraCenterPercentage = (0.5f, 0.5f);
+			Vec2 cameraCenterOffset = Size.Scaled(cameraCenterPercentage);
+			Vec2 scaledCameraOffset = cameraCenterOffset.Scaled(Scale);
+			Vec2 position = Offset + scaledCameraOffset;
+			return position;
+		}
+		public void SetCameraCenter(Vec2 position) {
+			Vec2 cameraCenterPercentage = (0.5f, 0.5f);
+			Vec2 cameraCenterOffset = Size.Scaled(cameraCenterPercentage);
+			Vec2 scaledCameraOffset = cameraCenterOffset.Scaled(Scale);
+			Vec2 screenAnchor = position - scaledCameraOffset;
+			Offset = screenAnchor;
+		}
 		static DrawBuffer() {
 			int countColors = 16;
 			int maxSuperSample = 4;
@@ -28,8 +52,8 @@ namespace MrV.CommandLine {
 		public Vec2 ShapeScale = new Vec2(0.5f, 1);
 		public delegate bool IsInsideShapeDelegate(Vec2 position);
 		public void DrawShape(IsInsideShapeDelegate isInsideShape, Vec2 start, Vec2 end, ConsoleGlyph glyphToPrint) {
-			Vec2 renderStart = start;
-			Vec2 renderEnd = end;
+			Vec2 renderStart = start - _originOffsetULCorner;
+			Vec2 renderEnd = end - _originOffsetULCorner;
 			renderStart.InverseScale(ShapeScale);
 			renderEnd.InverseScale(ShapeScale);
 			int TotalSamplesPerGlyph = AntiAliasColorMap.GetLength(1);
@@ -42,7 +66,8 @@ namespace MrV.CommandLine {
 					if (isInsideShape != null) {
 						for (float sampleY = 0; sampleY < 1; sampleY += SuperSampleIncrement) {
 							for (float sampleX = 0; sampleX < 1; sampleX += SuperSampleIncrement) {
-								bool pointIsInside = isInsideShape(new Vec2((x + sampleX) * ShapeScale.x, (y + sampleY) * ShapeScale.y));
+								bool pointIsInside = isInsideShape(new Vec2((x + sampleX) * ShapeScale.x, (y + sampleY) * ShapeScale.y)
+									+ _originOffsetULCorner);
 								if (pointIsInside) {
 									++countSamples;
 								}

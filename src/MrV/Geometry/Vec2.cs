@@ -9,6 +9,7 @@ namespace MrV.Geometry {
 		public static implicit operator Vec2((float x, float y) tuple) => new Vec2(tuple.x, tuple.y);
 		public override string ToString() => $"({x},{y})";
 		public void Scale(Vec2 scale) { x *= scale.x; y *= scale.y; }
+		public Vec2 Scaled(Vec2 scale) => new Vec2(x * scale.x, y * scale.y);
 		public void InverseScale(Vec2 scale) { x /= scale.x; y /= scale.y; }
 		public float MagnitudeSqr => x * x + y * y;
 		public float Magnitude => MathF.Sqrt(MagnitudeSqr);
