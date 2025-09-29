@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace MrV.GameEngine {
 	public class ObjectPool<T> {
-		private List<T> allObjects = new List<T>();
-		private int freeObjectCount = 0;
+		private List<T> _allObjects = new List<T>();
+		private int _freeObjectCount = 0;
 		public Func<T> CreateObject;
 		public Action<T> DestroyObject, CommissionObject, DecommissionObject;
-		private HashSet<int> delayedDecommission = new HashSet<int>();
+		private HashSet<int> _delayedDecommission = new HashSet<int>();
 
-		public int Count => allObjects.Count - freeObjectCount;
+		public int Count => _allObjects.Count - _freeObjectCount;
 		public T this[int index] => index < Count
-			? allObjects[index] : throw new ArgumentOutOfRangeException();
+			? _allObjects[index] : throw new ArgumentOutOfRangeException();
 		public ObjectPool() { }
 		public void Setup(Func<T> create, Action<T> commission = null,
 			Action<T> decommission = null, Action<T> destroy = null) {
@@ -20,51 +20,51 @@ namespace MrV.GameEngine {
 		}
 		public T Commission() {
 			T freeObject = default;
-			if (freeObjectCount == 0) {
+			if (_freeObjectCount == 0) {
 				freeObject = CreateObject.Invoke();
-				allObjects.Add(freeObject);
+				_allObjects.Add(freeObject);
 			} else {
-				freeObject = allObjects[allObjects.Count - freeObjectCount];
-				--freeObjectCount;
+				freeObject = _allObjects[_allObjects.Count - _freeObjectCount];
+				--_freeObjectCount;
 			}
 			if (CommissionObject != null) { CommissionObject(freeObject); }
 			return freeObject;
 		}
-		public void Decommission(T obj) => DecommissionAtIndex(allObjects.IndexOf(obj));
+		public void Decommission(T obj) => DecommissionAtIndex(_allObjects.IndexOf(obj));
 		public void DecommissionAtIndex(int indexOfObject) {
-			if (indexOfObject >= (allObjects.Count - freeObjectCount)) {
-				throw new Exception($"trying to free object twice: {allObjects[indexOfObject]}");
+			if (indexOfObject >= (_allObjects.Count - _freeObjectCount)) {
+				throw new Exception($"trying to free object twice: {_allObjects[indexOfObject]}");
 			}
-			T obj = allObjects[indexOfObject];
-			++freeObjectCount;
-			int beginningOfFreeList = allObjects.Count - freeObjectCount;
-			allObjects[indexOfObject] = allObjects[beginningOfFreeList];
-			allObjects[beginningOfFreeList] = obj;
+			T obj = _allObjects[indexOfObject];
+			++_freeObjectCount;
+			int beginningOfFreeList = _allObjects.Count - _freeObjectCount;
+			_allObjects[indexOfObject] = _allObjects[beginningOfFreeList];
+			_allObjects[beginningOfFreeList] = obj;
 			if (DecommissionObject != null) { DecommissionObject.Invoke(obj); }
 		}
 		public void Clear() {
-			for (int i = allObjects.Count - freeObjectCount - 1; i >= 0; --i) {
-				Decommission(allObjects[i]);
+			for (int i = _allObjects.Count - _freeObjectCount - 1; i >= 0; --i) {
+				Decommission(_allObjects[i]);
 			}
 		}
 		public void Dispose() {
 			Clear();
 			if (DestroyObject != null) { ForEach(DestroyObject.Invoke); }
-			allObjects.Clear();
+			_allObjects.Clear();
 		}
 		public void ForEach(Action<T> action) {
-			for (int i = 0; i < allObjects.Count; ++i) {
-				action.Invoke(allObjects[i]);
+			for (int i = 0; i < _allObjects.Count; ++i) {
+				action.Invoke(_allObjects[i]);
 			}
 		}
 		public void DecommissionDelayedAtIndex(int indexOfObject) {
-			delayedDecommission.Add(indexOfObject);
+			_delayedDecommission.Add(indexOfObject);
 		}
 		public void ServiceDelayedDecommission() {
-			if (delayedDecommission.Count == 0) { return; }
-			List<int> decommisionNow = new List<int>(delayedDecommission);
+			if (_delayedDecommission.Count == 0) { return; }
+			List<int> decommisionNow = new List<int>(_delayedDecommission);
 			decommisionNow.Sort();
-			delayedDecommission.Clear();
+			_delayedDecommission.Clear();
 			for (int i = decommisionNow.Count - 1; i >= 0; --i) {
 				DecommissionAtIndex(decommisionNow[i]);
 			}

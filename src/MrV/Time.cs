@@ -19,17 +19,17 @@ namespace MrV {
 		protected double _timeSecOfCurrentFrame;
 		protected static Time _instance;
 		public static long CurrentTimeMs => DateTimeOffset.Now.ToUnixTimeMilliseconds();
-		public long deltaTimeMs => _deltaTimeMs;
-		public float deltaTimeSec => _deltaTimeSec;
-		public long timeMsCurrentFrame => _timeMsOfCurrentFrame;
-		public double timeSecCurrentFrame => _timeSecOfCurrentFrame;
+		public long DeltaTimeMilliseconds => _deltaTimeMs;
+		public float DeltaTimeSeconds => _deltaTimeSec;
+		public long TimeMillisecondsCurrentFrame => _timeMsOfCurrentFrame;
+		public double TimeSecondsCurrentFrame => _timeSecOfCurrentFrame;
 		public long DeltaTimeMsCalculateNow => _timer.ElapsedMilliseconds - _timeMsOfCurrentFrame;
 		public float DeltaTimeSecCalculateNow => (float)(_timer.Elapsed.TotalSeconds - _timeSecOfCurrentFrame);
-		public static long TimeMsCurrentFrame => Instance.timeMsCurrentFrame;
-		public static double TimeSecCurrentFrame => Instance.timeSecCurrentFrame;
+		public static long TimeMsCurrentFrame => Instance.TimeMillisecondsCurrentFrame;
+		public static double TimeSecCurrentFrame => Instance.TimeSecondsCurrentFrame;
 		public static Time Instance => _instance != null ? _instance : _instance = new Time();
-		public static long DeltaTimeMs => Instance.deltaTimeMs;
-		public static float DeltaTimeSec => Instance.deltaTimeSec;
+		public static long DeltaTimeMs => Instance.DeltaTimeMilliseconds;
+		public static float DeltaTimeSec => Instance.DeltaTimeSeconds;
 		public static void Update() => Instance.UpdateTiming();
 		public static void SleepWithoutConsoleKeyPress(int ms) => Instance.ThrottleUpdate(ms, () => Console.KeyAvailable);
 		public Time() {

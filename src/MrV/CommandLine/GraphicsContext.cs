@@ -23,7 +23,6 @@ namespace MrV.CommandLine {
 						mustMoveCursorToNewLocation = false;
 					}
 					glyph.ApplyColor();
-					glyph.Letter = '.';
 					Console.Write(glyph);
 				}
 			}

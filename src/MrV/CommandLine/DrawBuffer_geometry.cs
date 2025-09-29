@@ -5,6 +5,7 @@ namespace MrV.CommandLine {
 	public partial class DrawBuffer {
 		public static ConsoleColorPair[,] AntiAliasColorMap;
 		private Vec2 _originOffsetULCorner;
+		public Vec2 Offset { get => _originOffsetULCorner; set => _originOffsetULCorner = value; }
 		public Vec2 Scale {
 			get => ShapeScale;
 			set {
@@ -13,7 +14,6 @@ namespace MrV.CommandLine {
 				SetCameraCenter(center);
 			}
 		}
-		public Vec2 Offset { get => _originOffsetULCorner; set => _originOffsetULCorner = value; }
 		public Vec2 GetCameraCenter() {
 			Vec2 cameraCenterPercentage = (0.5f, 0.5f);
 			Vec2 cameraCenterOffset = Size.Scaled(cameraCenterPercentage);
