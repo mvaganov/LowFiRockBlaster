@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace MrV.GameEngine {
-	public class ObjectPool<T> {
+	public class PolicyDrivenObjectPool<T> {
 		private List<T> _allObjects = new List<T>();
 		private int _freeObjectCount = 0;
 		public Func<T> CreateObject;
@@ -12,7 +12,7 @@ namespace MrV.GameEngine {
 		public int Count => _allObjects.Count - _freeObjectCount;
 		public T this[int index] => index < Count
 			? _allObjects[index] : throw new ArgumentOutOfRangeException();
-		public ObjectPool() { }
+		public PolicyDrivenObjectPool() { }
 		public void Setup(Func<T> create, Action<T> commission = null,
 			Action<T> decommission = null, Action<T> destroy = null) {
 			CreateObject = create; CommissionObject = commission;
@@ -34,6 +34,10 @@ namespace MrV.GameEngine {
 		public void DecommissionAtIndex(int indexOfObject) {
 			if (indexOfObject >= (_allObjects.Count - _freeObjectCount)) {
 				throw new Exception($"trying to free object twice: {_allObjects[indexOfObject]}");
+			}
+			if (_delayedDecommission.Count > 0) {
+				DecommissionDelayedAtIndex(indexOfObject);
+				return;
 			}
 			T obj = _allObjects[indexOfObject];
 			++_freeObjectCount;

@@ -4,7 +4,7 @@ using System;
 
 namespace MrV.GameEngine {
 	internal class ParticleSystem {
-		public ObjectPool<Particle> ParticlePool = new ObjectPool<Particle>();
+		public PolicyDrivenObjectPool<Particle> ParticlePool = new PolicyDrivenObjectPool<Particle>();
 		public FloatOverTime SizeOverLifetime;
 		public ConsoleColor Color = ConsoleColor.White;
 		public Vec2 Position;
