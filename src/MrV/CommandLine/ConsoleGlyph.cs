@@ -14,15 +14,15 @@ namespace MrV.CommandLine {
 				}
 			}
 		}
-		public ConsoleColor fore { get { return colorPair.fore; } set { colorPair.fore = value; } }
-		public ConsoleColor back { get { return colorPair.back; } set { colorPair.back = value; } }
+		public ConsoleColor Fore { get { return colorPair.fore; } set { colorPair.fore = value; } }
+		public ConsoleColor Back { get { return colorPair.back; } set { colorPair.back = value; } }
 		public ConsoleGlyph(char letter, ConsoleColorPair colorPair) { this.letter = letter; this.colorPair = colorPair; }
-		public static implicit operator ConsoleGlyph(ConsoleColor color) => new ConsoleGlyph(' ', Default.fore, color);
+		public static implicit operator ConsoleGlyph(ConsoleColor color) => new ConsoleGlyph(' ', Default.Fore, color);
 		public ConsoleGlyph(char letter, ConsoleColor fore, ConsoleColor back) :
 			this(' ', new ConsoleColorPair(fore, back)) { }
 		public static readonly ConsoleGlyph Default = new ConsoleGlyph(' ', ConsoleColorPair.Default);
 		public static readonly ConsoleGlyph Empty = new ConsoleGlyph('\0', ConsoleColor.Black, ConsoleColor.Black);
-		public bool Equals(ConsoleGlyph other) => other.letter == letter && other.fore == fore && other.back == back;
+		public bool Equals(ConsoleGlyph other) => other.letter == letter && other.Fore == Fore && other.Back == Back;
 		public override string ToString() => letter.ToString();
 		public void ApplyColor() => colorPair.Apply();
 		public static ConsoleGlyph[] Convert(string text,

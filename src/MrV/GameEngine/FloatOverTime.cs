@@ -27,6 +27,11 @@ namespace MrV.GameEngine {
 		public abstract T Lerp(float t, T start, T end);
 		public ValueOverTime(IList<Frame<T>> curve) {
 			this.curve = curve;
+			for (int i = 1; i < curve.Count; i++) {
+				if (curve[i].time < curve[i - 1].time) {
+					throw new System.Exception("curve time values should be sorted least to greatest");
+				}
+			}
 		}
 		public bool TryGetValue(float time, out T value) {
 			if (curve == null || curve.Count == 0) {

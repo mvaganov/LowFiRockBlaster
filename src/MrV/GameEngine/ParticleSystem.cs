@@ -51,6 +51,7 @@ namespace MrV.GameEngine {
 		}
 		public void Update() {
 			for (int i = 0; i < ParticlePool.Count; ++i) {
+				// possible to update decommissioned object. cost of updating stale object assumed less than servicing decommissions every iteration.
 				ParticlePool[i].Update();
 				float timeProgress = ParticlePool[i].LifetimeCurrent / ParticlePool[i].LifetimeMax;
 				ParticlePool[i].Circle.radius = GetSizeAtTime(timeProgress) * ParticlePool[i].OriginalSize;

@@ -17,6 +17,7 @@ namespace MrV {
 		protected float _deltaTimeSec;
 		protected long _timeMsOfCurrentFrame;
 		protected double _timeSecOfCurrentFrame;
+		protected double _fractionalMsRemainder;
 		protected static Time _instance;
 		public static long CurrentTimeMs => DateTimeOffset.Now.ToUnixTimeMilliseconds();
 		public long DeltaTimeMilliseconds => _deltaTimeMs;
@@ -27,10 +28,14 @@ namespace MrV {
 		public float DeltaTimeSecCalculateNow => (float)(_timer.Elapsed.TotalSeconds - _timeSecOfCurrentFrame);
 		public static long TimeMsCurrentFrame => Instance.TimeMillisecondsCurrentFrame;
 		public static double TimeSecCurrentFrame => Instance.TimeSecondsCurrentFrame;
-		public static Time Instance => _instance != null ? _instance : _instance = new Time();
+		public static Time Instance {
+			get => _instance != null ? _instance : _instance = new Time();
+			set => _instance = value;
+		}
 		public static long DeltaTimeMs => Instance.DeltaTimeMilliseconds;
 		public static float DeltaTimeSec => Instance.DeltaTimeSeconds;
 		public static void Update() => Instance.UpdateTiming();
+		public static void Update(float deltaTimeSeconds) => Instance.UpdateTiming(deltaTimeSeconds);
 		public static void SleepWithoutConsoleKeyPress(int ms) => Instance.ThrottleUpdate(ms, () => Console.KeyAvailable);
 		public Time() {
 			_timer = new Stopwatch();
@@ -40,10 +45,20 @@ namespace MrV {
 			UpdateTiming();
 		}
 		public void UpdateTiming() {
-			_deltaTimeMs = DeltaTimeMsCalculateNow;
-			_deltaTimeSec = DeltaTimeSecCalculateNow;
-			_timeSecOfCurrentFrame = _timer.Elapsed.TotalSeconds;
-			_timeMsOfCurrentFrame = _timer.ElapsedMilliseconds;
+			UpdateTiming(DeltaTimeSecCalculateNow);
+		}
+		public void UpdateTiming(float deltaTimeSeconds) {
+			_deltaTimeSec = deltaTimeSeconds;
+			float milliseconds = _deltaTimeSec * 1000;
+			_deltaTimeMs = (long)milliseconds;
+			_fractionalMsRemainder += milliseconds - _deltaTimeMs;
+			if (_fractionalMsRemainder >= 1) {
+				int extraMillisecond = (int)_fractionalMsRemainder;
+				_deltaTimeMs += extraMillisecond;
+				_fractionalMsRemainder -= extraMillisecond;
+			}
+			_timeSecOfCurrentFrame = _timeSecOfCurrentFrame + _deltaTimeSec;
+			_timeMsOfCurrentFrame = _timeMsOfCurrentFrame + _deltaTimeMs;
 		}
 		public void ThrottleUpdate(int idealFrameDelayMs, Func<bool> interruptSleep = null) {
 			long soon = _timeMsOfCurrentFrame + idealFrameDelayMs;

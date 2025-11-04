@@ -78,7 +78,7 @@ namespace MrV.CommandLine {
 					}
 					if (countSamples == 0) { continue; }
 					ConsoleGlyph glyph = glyphToPrint;
-					glyph.back = AntiAliasColorMap[(int)glyphToPrint.back, countSamples - 1].back;
+					glyph.Back = AntiAliasColorMap[(int)glyphToPrint.Back, countSamples - 1].back;
 					WriteAt(glyph, y, x);
 				}
 			}
@@ -93,6 +93,7 @@ namespace MrV.CommandLine {
 			DrawShape(null, aabb.Min, aabb.Max, letterToPrint);
 		}
 		public void DrawCircle(Circle c, ConsoleGlyph letterToPrint) {
+			// TODO why not use DrawShape, like DrawPolygon does?
 			DrawCircle(c.center, c.radius, letterToPrint);
 		}
 		public void DrawCircle(Vec2 pos, float radius, ConsoleGlyph letterToPrint) {

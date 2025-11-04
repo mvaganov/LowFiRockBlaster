@@ -20,6 +20,7 @@ namespace MrV.GameEngine {
 		}
 		public T Commission() {
 			T freeObject = default;
+			// if threading, `lock(_allObjects)` around the rest of this method until the return
 			if (_freeObjectCount == 0) {
 				freeObject = CreateObject.Invoke();
 				_allObjects.Add(freeObject);
@@ -40,6 +41,7 @@ namespace MrV.GameEngine {
 				return;
 			}
 			T obj = _allObjects[indexOfObject];
+			// if threading, `lock(_allObjects)` around the rest of this method
 			++_freeObjectCount;
 			int beginningOfFreeList = _allObjects.Count - _freeObjectCount;
 			_allObjects[indexOfObject] = _allObjects[beginningOfFreeList];
