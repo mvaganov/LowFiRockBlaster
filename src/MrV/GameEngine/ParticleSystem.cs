@@ -61,10 +61,6 @@ namespace MrV.GameEngine {
 			}
 			ParticlePool.ServiceDelayedDecommission();
 		}
-		public void Emit(int count = 1) {
-			for (int i = 0; i < count; ++i) {
-				ParticlePool.Commission();
-			}
-		}
+		public void Emit(int count = 1) => ParticlePool.Commission(count);
 	}
 }

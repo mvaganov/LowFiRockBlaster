@@ -7,7 +7,7 @@ namespace MrV.GameEngine {
 		private int _freeObjectCount = 0;
 		public Func<T> CreateObject;
 		public Action<T> DestroyObject, CommissionObject, DecommissionObject;
-		private HashSet<int> _delayedDecommission = new HashSet<int>();
+		private SortedSet<int> _delayedDecommission = new SortedSet<int>();
 
 		public int Count => _allObjects.Count - _freeObjectCount;
 		public T this[int index] => index < Count
@@ -30,6 +30,29 @@ namespace MrV.GameEngine {
 			}
 			if (CommissionObject != null) { CommissionObject(freeObject); }
 			return freeObject;
+		}
+		public IList<T> Commission(int count) {
+			int startingIndex = _allObjects.Count - _freeObjectCount;
+			T[] objects = new T[count];
+			int countToCreate = count - _freeObjectCount;
+			int index = 0;
+			while (_freeObjectCount > 0 && index < count) {
+				objects[index++] = _allObjects[_allObjects.Count - _freeObjectCount];
+				--_freeObjectCount;
+			}
+			if (countToCreate > 0) {
+				int targetBufferSize = _allObjects.Count + countToCreate;
+				if (_allObjects.Capacity < targetBufferSize) {
+					_allObjects.Capacity = targetBufferSize;
+				}
+				for (int i = 0; i < countToCreate; ++i) {
+					T newObject = CreateObject.Invoke();
+					_allObjects.Add(newObject);
+					objects[index++] = newObject;
+				}
+			}
+			if (CommissionObject != null) { Array.ForEach(objects, CommissionObject); }
+			return objects;
 		}
 		public void Decommission(T obj) => DecommissionAtIndex(_allObjects.IndexOf(obj));
 		public void DecommissionAtIndex(int indexOfObject) {
@@ -68,11 +91,10 @@ namespace MrV.GameEngine {
 		}
 		public void ServiceDelayedDecommission() {
 			if (_delayedDecommission.Count == 0) { return; }
-			List<int> decommisionNow = new List<int>(_delayedDecommission);
-			decommisionNow.Sort();
+			List<int> decommissionNow = new List<int>(_delayedDecommission);
 			_delayedDecommission.Clear();
-			for (int i = decommisionNow.Count - 1; i >= 0; --i) {
-				DecommissionAtIndex(decommisionNow[i]);
+			for (int i = decommissionNow.Count - 1; i >= 0; --i) {
+				DecommissionAtIndex(decommissionNow[i]);
 			}
 		}
 	}

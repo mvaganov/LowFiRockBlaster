@@ -5,7 +5,7 @@ namespace MrV {
 	/// <summary>
 	/// Keeps track of timing, specifically for frame-based update in a game loop.
 	/// <list type="bullet">
-	/// <item>Uses C# <see cref="Stopwatch"/> as cannonical timer implementation</item>
+	/// <item>Uses C# <see cref="Stopwatch"/> as canonical timer implementation</item>
 	/// <item>Floating point values are convenient for physics calculations</item>
 	/// <item>Floating point timestamps are stored as 'double' for precision, since 'float' becomes less accurate than 1ms after 4.5 hours</item>
 	/// <item>Time is also calculated in milliseconds, since all floating points (even doubles) become less accurate as values increase</item>

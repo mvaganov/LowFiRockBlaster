@@ -78,7 +78,7 @@ namespace MrV.CommandLine {
 					}
 					if (countSamples == 0) { continue; }
 					ConsoleGlyph glyph = glyphToPrint;
-					glyph.Back = AntiAliasColorMap[(int)glyphToPrint.Back, countSamples - 1].back;
+					glyph.Back = AntiAliasColorMap[(int)glyphToPrint.Back, countSamples - 1].Back;
 					WriteAt(glyph, y, x);
 				}
 			}

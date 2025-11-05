@@ -14,8 +14,8 @@ namespace MrV.CommandLine {
 				}
 			}
 		}
-		public ConsoleColor Fore { get { return colorPair.fore; } set { colorPair.fore = value; } }
-		public ConsoleColor Back { get { return colorPair.back; } set { colorPair.back = value; } }
+		public ConsoleColor Fore { get { return colorPair.Fore; } set { colorPair.Fore = value; } }
+		public ConsoleColor Back { get { return colorPair.Back; } set { colorPair.Back = value; } }
 		public ConsoleGlyph(char letter, ConsoleColorPair colorPair) { this.letter = letter; this.colorPair = colorPair; }
 		public static implicit operator ConsoleGlyph(ConsoleColor color) => new ConsoleGlyph(' ', Default.Fore, color);
 		public ConsoleGlyph(char letter, ConsoleColor fore, ConsoleColor back) :
