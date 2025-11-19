@@ -2,9 +2,9 @@
 
 namespace MrV.GameEngine {
 	public class FloatOverTime : ValueOverTime<float> {
-		public static FloatOverTime GrowAndShrink = new FloatOverTime(From0To1To0);
-		private static readonly Frame<float>[] From0To1To0 = new Frame<float>[]
+		private static Frame<float>[] From0To1To0 = new Frame<float>[]
 		{ new Frame<float>(0, 0), new Frame<float>(0.5f, 1), new Frame<float>(1, 0) };
+		public static FloatOverTime GrowAndShrink = new FloatOverTime(From0To1To0);
 		public FloatOverTime(IList<Frame<float>> curve) : base(curve) {}
 		public override float Lerp(float percentageProgress, float start, float end) {
 			float delta = end - start;
