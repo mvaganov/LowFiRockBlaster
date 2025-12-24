@@ -1,8 +1,8 @@
 ﻿namespace MrV.Geometry {
 	public struct AABB {
 		public Vec2 Min, Max;
-		public float Width => (Max.x - Min.x);
-		public float Height => (Max.y - Min.y);
+		public float Width => (Max.X - Min.X);
+		public float Height => (Max.Y - Min.Y);
 		public AABB(AABB r) : this(r.Min, r.Max) { }
 		public AABB(Vec2 min, Vec2 max) {
 			Min = min; Max = max;

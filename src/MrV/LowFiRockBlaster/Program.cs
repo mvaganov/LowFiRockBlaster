@@ -17,10 +17,10 @@ namespace MrV.LowFiRockBlaster {
 			float targetFps = 200;
 			int targetMsDelay = (int)(1000 / targetFps);
 			GraphicsContext graphics = new GraphicsContext(height, width);
-			KeyInput.Bind('w', () => position.y -= moveIncrement, "move circle up");
-			KeyInput.Bind('a', () => position.x -= moveIncrement, "move circle left");
-			KeyInput.Bind('s', () => position.y += moveIncrement, "move circle down");
-			KeyInput.Bind('d', () => position.x += moveIncrement, "move circle right");
+			KeyInput.Bind('w', () => position.Y -= moveIncrement, "move circle up");
+			KeyInput.Bind('a', () => position.X -= moveIncrement, "move circle left");
+			KeyInput.Bind('s', () => position.Y += moveIncrement, "move circle down");
+			KeyInput.Bind('d', () => position.X += moveIncrement, "move circle right");
 			KeyInput.Bind('e', () => radius += moveIncrement, "expand radius");
 			KeyInput.Bind('r', () => radius -= moveIncrement, "reduce radius");
 			KeyInput.Bind((char)27, () => running = false, "quit");

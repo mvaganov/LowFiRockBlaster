@@ -2,31 +2,27 @@
 
 namespace MrV.Geometry {
 	public struct Vec2 {
-		public float x, y;
-		public Vec2(float x, float y) { this.x = x; this.y = y; }
-		public static Vec2 operator +(Vec2 a, Vec2 b) => new Vec2(a.x + b.x, a.y + b.y);
-		public static Vec2 operator -(Vec2 a, Vec2 b) => new Vec2(a.x - b.x, a.y - b.y);
+		public float X, Y;
+		public Vec2(float x, float y) { X = x; Y = y; }
+		public static Vec2 operator +(Vec2 a, Vec2 b) => new Vec2(a.X + b.X, a.Y + b.Y);
+		public static Vec2 operator -(Vec2 a, Vec2 b) => new Vec2(a.X - b.X, a.Y - b.Y);
+		public static Vec2 operator *(Vec2 a, Vec2 b) => new Vec2(a.X * b.X, a.Y * b.Y);
+		public static Vec2 operator /(Vec2 a, Vec2 b) => new Vec2(a.X / b.X, a.Y / b.Y);
 		public static implicit operator Vec2((float x, float y) tuple) => new Vec2(tuple.x, tuple.y);
-		public override string ToString() => $"({x},{y})";
-		public void Scale(Vec2 scale) { x *= scale.x; y *= scale.y; }
-		public Vec2 Scaled(Vec2 scale) => new Vec2(x * scale.x, y * scale.y);
-		public void InverseScale(Vec2 scale) { x /= scale.x; y /= scale.y; }
-		public float MagnitudeSqr => x * x + y * y;
-		public float Magnitude => MathF.Sqrt(MagnitudeSqr);
-		public static Vec2 operator *(Vec2 vector, float scalar) => new Vec2(vector.x * scalar, vector.y * scalar);
-		public static Vec2 operator /(Vec2 vector, float scalar) => new Vec2(vector.x / scalar, vector.y / scalar);
-		public Vec2 Normalized => this / Magnitude;
-		public Vec2 Perpendicular => new Vec2(y, -x);
+		public override string ToString() => $"({X},{Y})";
+		public float LengthSquared() => X * X + Y * Y;
+		public float Length() => MathF.Sqrt(LengthSquared());
+		public static Vec2 operator *(Vec2 vector, float scalar) => new Vec2(vector.X * scalar, vector.Y * scalar);
+		public static Vec2 operator /(Vec2 vector, float scalar) => new Vec2(vector.X / scalar, vector.Y / scalar);
+		public Vec2 Normalized() => this / Length();
+		public Vec2 Perpendicular() => new Vec2(Y, -X);
 		public static float DegreesToRadians(float degrees) => degrees * MathF.PI / 180;
 		public static float RadiansToDegrees(float radians) => radians * 180 / MathF.PI;
 		public static Vec2 ConvertRadians(float radians) => new Vec2(MathF.Cos(radians), MathF.Sin(radians));
 		public static Vec2 ConvertDegrees(float degrees) => ConvertRadians(DegreesToRadians(degrees));
+		public float NormalToRadians() => MathF.Atan2(Y, X);
 		public float NormalToDegrees() => RadiansToDegrees(NormalToRadians());
-		public float NormalToRadians() => WrapRadian(MathF.Atan2(y, x));
-		public static float WrapRadian(float radian) {
-			while (radian > MathF.PI) { radian -= 2 * MathF.PI; }
-			while (radian <= -MathF.PI) { radian += 2 * MathF.PI; }
-			return radian;
-		}
+		public static float WrapRadian(float radian) => MathF.IEEERemainder(radian, 2 * MathF.PI);
+		public static float WrapDegrees(float degrees) => MathF.IEEERemainder(degrees, 360);
 	}
 }

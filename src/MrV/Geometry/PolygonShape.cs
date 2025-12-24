@@ -11,13 +11,13 @@ namespace MrV.Geometry {
 			bool inside = false;
 			for (int index = 0, prevIndex = poly.Count - 1; index < poly.Count; prevIndex = index++) {
 				Vec2 vertex = poly[index], prevVertex = poly[prevIndex];
-				bool edgeVerticallySpansRay = (vertex.y > pt.y) != (prevVertex.y > pt.y);
+				bool edgeVerticallySpansRay = (vertex.Y > pt.Y) != (prevVertex.Y > pt.Y);
 				if (!edgeVerticallySpansRay) {
 					continue;
 				}
-				float slope = (prevVertex.x - vertex.x) / (prevVertex.y - vertex.y);
-				float xIntersection = slope * (pt.y - vertex.y) + vertex.x;
-				bool intersect = pt.x < xIntersection;
+				float slope = (prevVertex.X - vertex.X) / (prevVertex.Y - vertex.Y);
+				float xIntersection = slope * (pt.Y - vertex.Y) + vertex.X;
+				bool intersect = pt.X < xIntersection;
 				if (intersect) {
 					inside = !inside;
 				}
@@ -32,10 +32,10 @@ namespace MrV.Geometry {
 			min = max = points[0];
 			for (int i = 1; i < points.Count; ++i) {
 				Vec2 p = points[i];
-				if (p.x < min.x) { min.x = p.x; }
-				if (p.y < min.y) { min.y = p.y; }
-				if (p.x > max.x) { max.x = p.x; }
-				if (p.y > max.y) { max.y = p.y; }
+				if (p.X < min.X) { min.X = p.X; }
+				if (p.Y < min.Y) { min.Y = p.Y; }
+				if (p.X > max.X) { max.X = p.X; }
+				if (p.Y > max.Y) { max.Y = p.Y; }
 			}
 			return true;
 		}

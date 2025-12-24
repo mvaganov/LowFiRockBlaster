@@ -59,14 +59,14 @@ namespace MrV.CommandLine {
 			int TotalSamplesPerGlyph = AntiAliasColorMap.GetLength(1);
 			int SamplesPerDimension = (int)Math.Sqrt(TotalSamplesPerGlyph);
 			float SuperSampleIncrement = 1f / SamplesPerDimension;
-			for (int y = (int)renderStart.y; y < renderEnd.y; ++y) {
-				for (int x = (int)renderStart.x; x < renderEnd.x; ++x) {
+			for (int y = (int)renderStart.Y; y < renderEnd.Y; ++y) {
+				for (int x = (int)renderStart.X; x < renderEnd.X; ++x) {
 					if (!IsValidLocation(y, x)) { continue; }
 					int countSamples = 0;
 					if (isInsideShape != null) {
 						for (float sampleY = 0; sampleY < 1; sampleY += SuperSampleIncrement) {
 							for (float sampleX = 0; sampleX < 1; sampleX += SuperSampleIncrement) {
-								bool pointIsInside = isInsideShape(new Vec2((x + sampleX) * ShapeScale.x, (y + sampleY) * ShapeScale.y)
+								bool pointIsInside = isInsideShape(new Vec2((x + sampleX) * ShapeScale.X, (y + sampleY) * ShapeScale.Y)
 									+ _originOffsetULCorner);
 								if (pointIsInside) {
 									++countSamples;
@@ -103,8 +103,8 @@ namespace MrV.CommandLine {
 			float r2 = radius * radius;
 			DrawShape(IsInCircle, start, end, letterToPrint);
 			bool IsInCircle(Vec2 point) {
-				float dx = point.x - pos.x;
-				float dy = point.y - pos.y;
+				float dx = point.X - pos.X;
+				float dy = point.Y - pos.Y;
 				return dx * dx + dy * dy < r2;
 			}
 		}
@@ -115,8 +115,8 @@ namespace MrV.CommandLine {
 		}
 		public void DrawLine(Vec2 start, Vec2 end, float thickness, ConsoleGlyph letterToPrint) {
 			Vec2 delta = end - start;
-			Vec2 direction = delta.Normalized;
-			Vec2 perp = direction.Perpendicular * thickness/2;
+			Vec2 direction = delta.Normalized();
+			Vec2 perp = direction.Perpendicular() * thickness/2;
 			Vec2[] line = new Vec2[] { start - perp, start + perp, end + perp, end - perp };
 			DrawPolygon(line, letterToPrint); 
 		}
