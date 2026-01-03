@@ -15,7 +15,7 @@ namespace MrV.GameEngine {
 		}
 		public void Init(Circle circle, Vec2 velocity, ConsoleColor color, float lifetime) {
 			Circle = circle;
-			OriginalSize = circle.radius;
+			OriginalSize = circle.Radius;
 			Velocity = velocity;
 			Color = color;
 			Enabled = true;
@@ -24,7 +24,8 @@ namespace MrV.GameEngine {
 		}
 		public void Draw(GraphicsContext g) {
 			if (!Enabled) { return; }
-			g.DrawCircle(Circle, Color);
+			g.SetColor(Color);
+			g.DrawCircle(Circle);
 			//float speed = Velocity.Magnitude;
 			//if (speed > 0) {
 			//	Vec2 direction = Velocity / speed;
@@ -40,7 +41,7 @@ namespace MrV.GameEngine {
 				return;
 			}
 			Vec2 moveThisFrame = Velocity * Time.DeltaTimeSec;
-			Circle.center += moveThisFrame;
+			Circle.Center += moveThisFrame;
 		}
 	}
 }

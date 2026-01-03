@@ -51,11 +51,16 @@ namespace MrV.LowFiRockBlaster {
 			List<Action<GraphicsContext>> drawPreProcessing = new List<Action<GraphicsContext>>();
 			List<Action<GraphicsContext>> drawPostProcessing = new List<Action<GraphicsContext>>();
 			void TestGraphics(GraphicsContext graphics) {
-				graphics.DrawRectangle(0, 0, width, height, ConsoleGlyph.Default);
-				graphics.DrawRectangle((2, 3), new Vec2(20, 15), ConsoleColor.Red);
-				graphics.DrawRectangle(new AABB((10, 1), (15, 20)), ConsoleColor.Green);
-				graphics.DrawCircle(position, radius, ConsoleColor.Blue);
-				graphics.DrawPolygon(polygonShape, ConsoleColor.Yellow);
+				graphics.SetColor(ConsoleGlyph.Default);
+				graphics.DrawRectangle(0, 0, width, height);
+				graphics.SetColor(ConsoleColor.Red);
+				graphics.DrawRectangle((2, 3), new Vec2(20, 15));
+				graphics.SetColor(ConsoleColor.Green);
+				graphics.DrawRectangle(new AABB((10, 1), (15, 20)));
+				graphics.SetColor(ConsoleColor.Blue);
+				graphics.DrawCircle(position, radius);
+				graphics.SetColor(ConsoleColor.Yellow);
+				graphics.DrawPolygon(polygonShape);
 			}
 			drawPreProcessing.Add(TestGraphics);
 			drawPostProcessing.Add(particles.Draw);

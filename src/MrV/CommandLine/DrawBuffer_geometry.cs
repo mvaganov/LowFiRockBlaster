@@ -4,6 +4,7 @@ using System;
 namespace MrV.CommandLine {
 	public partial class DrawBuffer {
 		public static ConsoleColorPair[,] AntiAliasColorMap;
+		public ConsoleGlyph _currentColor;
 		private Vec2 _originOffsetULCorner;
 		public Vec2 Offset { get => _originOffsetULCorner; set => _originOffsetULCorner = value; }
 		public Vec2 Scale {
@@ -14,17 +15,18 @@ namespace MrV.CommandLine {
 				SetCameraCenter(center);
 			}
 		}
+		public void SetColor(ConsoleGlyph color) => _currentColor = color;
 		public Vec2 GetCameraCenter() {
 			Vec2 cameraCenterPercentage = (0.5f, 0.5f);
-			Vec2 cameraCenterOffset = Size.Scaled(cameraCenterPercentage);
-			Vec2 scaledCameraOffset = cameraCenterOffset.Scaled(Scale);
+			Vec2 cameraCenterOffset = Size * cameraCenterPercentage;
+			Vec2 scaledCameraOffset = cameraCenterOffset * Scale;
 			Vec2 position = Offset + scaledCameraOffset;
 			return position;
 		}
 		public void SetCameraCenter(Vec2 position) {
 			Vec2 cameraCenterPercentage = (0.5f, 0.5f);
-			Vec2 cameraCenterOffset = Size.Scaled(cameraCenterPercentage);
-			Vec2 scaledCameraOffset = cameraCenterOffset.Scaled(Scale);
+			Vec2 cameraCenterOffset = Size * cameraCenterPercentage;
+			Vec2 scaledCameraOffset = cameraCenterOffset * Scale;
 			Vec2 screenAnchor = position - scaledCameraOffset;
 			Offset = screenAnchor;
 		}
@@ -51,11 +53,11 @@ namespace MrV.CommandLine {
 
 		public Vec2 ShapeScale = new Vec2(0.5f, 1);
 		public delegate bool IsInsideShapeDelegate(Vec2 position);
-		public void DrawShape(IsInsideShapeDelegate isInsideShape, Vec2 start, Vec2 end, ConsoleGlyph glyphToPrint) {
+		public void DrawShape(IsInsideShapeDelegate isInsideShape, Vec2 start, Vec2 end) {
 			Vec2 renderStart = start - _originOffsetULCorner;
 			Vec2 renderEnd = end - _originOffsetULCorner;
-			renderStart.InverseScale(ShapeScale);
-			renderEnd.InverseScale(ShapeScale);
+			renderStart /= ShapeScale;
+			renderEnd /= ShapeScale;
 			int TotalSamplesPerGlyph = AntiAliasColorMap.GetLength(1);
 			int SamplesPerDimension = (int)Math.Sqrt(TotalSamplesPerGlyph);
 			float SuperSampleIncrement = 1f / SamplesPerDimension;
@@ -77,48 +79,47 @@ namespace MrV.CommandLine {
 						countSamples = TotalSamplesPerGlyph;
 					}
 					if (countSamples == 0) { continue; }
-					ConsoleGlyph glyph = glyphToPrint;
-					glyph.Back = AntiAliasColorMap[(int)glyphToPrint.Back, countSamples - 1].Back;
+					ConsoleGlyph glyph = _currentColor;
+					glyph.Back = AntiAliasColorMap[(int)_currentColor.Back, countSamples - 1].Back;
 					WriteAt(glyph, y, x);
 				}
 			}
 		}
-		public void DrawRectangle(Vec2 position, Vec2 size, ConsoleGlyph letterToPrint) {
-			DrawShape(null, position, position+size, letterToPrint);
+		public void DrawRectangle(Vec2 position, Vec2 size) {
+			DrawShape(null, position, position+size);
 		}
-		public void DrawRectangle(int x, int y, int width, int height, ConsoleGlyph letterToPrint) {
-			DrawShape(null, new Vec2(x, y), new Vec2(x + width, y + height), letterToPrint);
+		public void DrawRectangle(int x, int y, int width, int height) {
+			DrawShape(null, new Vec2(x, y), new Vec2(x + width, y + height));
 		}
-		public void DrawRectangle(AABB aabb, ConsoleGlyph letterToPrint) {
-			DrawShape(null, aabb.Min, aabb.Max, letterToPrint);
+		public void DrawRectangle(AABB aabb) {
+			DrawShape(null, aabb.Min, aabb.Max);
 		}
-		public void DrawCircle(Circle c, ConsoleGlyph letterToPrint) {
-			// TODO why not use DrawShape, like DrawPolygon does?
-			DrawCircle(c.center, c.radius, letterToPrint);
+		public void DrawCircle(Circle c) {
+			DrawCircle(c.Center, c.Radius);
 		}
-		public void DrawCircle(Vec2 pos, float radius, ConsoleGlyph letterToPrint) {
+		public void DrawCircle(Vec2 pos, float radius) {
 			Vec2 extent = new Vec2(radius, radius);
 			Vec2 start = pos - extent;
 			Vec2 end = pos + extent;
 			float r2 = radius * radius;
-			DrawShape(IsInCircle, start, end, letterToPrint);
+			DrawShape(IsInCircle, start, end);
 			bool IsInCircle(Vec2 point) {
 				float dx = point.X - pos.X;
 				float dy = point.Y - pos.Y;
 				return dx * dx + dy * dy < r2;
 			}
 		}
-		public void DrawPolygon(Vec2[] poly, ConsoleGlyph letterToPrint) {
+		public void DrawPolygon(Vec2[] poly) {
 			PolygonShape.TryGetAABB(poly, out Vec2 start, out Vec2 end);
-			DrawShape(IsInPolygon, start, end, letterToPrint);
+			DrawShape(IsInPolygon, start, end);
 			bool IsInPolygon(Vec2 point) => PolygonShape.IsInPolygon(poly, point);
 		}
-		public void DrawLine(Vec2 start, Vec2 end, float thickness, ConsoleGlyph letterToPrint) {
+		public void DrawLine(Vec2 start, Vec2 end, float thickness) {
 			Vec2 delta = end - start;
 			Vec2 direction = delta.Normalized();
 			Vec2 perp = direction.Perpendicular() * thickness/2;
 			Vec2[] line = new Vec2[] { start - perp, start + perp, end + perp, end - perp };
-			DrawPolygon(line, letterToPrint); 
+			DrawPolygon(line); 
 		}
 	}
 }

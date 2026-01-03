@@ -28,13 +28,13 @@ namespace MrV.GameEngine {
 			particle.Enabled = true;
 			particle.LifetimeCurrent = 0;
 			particle.OriginalSize = ParticleSize.Random;
-			particle.Circle.radius = particle.OriginalSize * GetSizeAtTime(0);
+			particle.Circle.Radius = particle.OriginalSize * GetSizeAtTime(0);
 			particle.Velocity = default;
 			particle.Color = Color;
 			particle.LifetimeMax = ParticleLifetime.Random;
 			Vec2 direction = Vec2.ConvertDegrees(360 * Rand.Number);
 			particle.Velocity = direction * ParticleSpeed.Random;
-			particle.Circle.center = Position + direction * SpawnRadius.Random;
+			particle.Circle.Center = Position + direction * SpawnRadius.Random;
 		}
 		public void DecommissionParticle(Particle particle) {
 			particle.Enabled = false;
@@ -54,7 +54,7 @@ namespace MrV.GameEngine {
 				// possible to update decommissioned object. cost of updating stale object assumed less than servicing decommissions every iteration.
 				ParticlePool[i].Update();
 				float timeProgress = ParticlePool[i].LifetimeCurrent / ParticlePool[i].LifetimeMax;
-				ParticlePool[i].Circle.radius = GetSizeAtTime(timeProgress) * ParticlePool[i].OriginalSize;
+				ParticlePool[i].Circle.Radius = GetSizeAtTime(timeProgress) * ParticlePool[i].OriginalSize;
 				if (timeProgress >= 1) {
 					ParticlePool.DecommissionDelayedAtIndex(i);
 				}
